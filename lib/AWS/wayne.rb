@@ -38,18 +38,18 @@ def backup(options = {})
   puts "step1:take a snapshot on some specific volumeXs from backup instance"
   # find boot volume
   bootVolume=nil
-  backupInstanceVolumes=instance.volumes
+  backupInstanceVolumes = instance.volumes
   backupInstanceVolumes.each do |volume|
-    if volume.attachments[0].device=="/dev/xvda"
+    if volume.attachments[0].device == "/dev/xvda"
       bootVolume=volume
     end
   end
 
 
   # step 1.1 Only take root volumes snapshot
-  if bootVolume!=nil
+  if bootVolume != nil
     puts "step 1.1: Only take root volume snapshot"
-    boot_valume_snapshot=resource.create_snapshot({
+    boot_valume_snapshot = resource.create_snapshot({
                                                       dry_run: false,
                                                       volume_id: bootVolume.id, # required
                                                       description: "snapshot for bootvolume from EC2 instance: "+instance_id,
@@ -89,7 +89,7 @@ def backup(options = {})
                                          ],
                                      })
     # step 1.1.4 creating "EC2-instanceID" tag.
-    puts "step 1.1.4 creating \"EC2-instanceID\" tag on snapshot "+boot_valume_snapshot.id
+    puts "step 1.1.4 creating \"EC2-instanceID\" tag on snapshot " + boot_valume_snapshot.id
     boot_valume_snapshot.create_tags({
                                          dry_run: false,
                                          tags: [ # required
@@ -115,17 +115,17 @@ def backup(options = {})
 
 
   # step 1.2 Only take block volumes snapshot
-  if  instance.volumes.count!=0
+  if  instance.volumes.count != 0
     puts "step 1.2: Only take block volumes snapshot"
     instance.volumes.each do |volume|
-      if volume.attachments[0].device!="/dev/xvda"
+      if volume.attachments[0].device != "/dev/xvda"
         snapshot =resource.create_snapshot({
                                                dry_run: false,
                                                volume_id: volume.id, # required
                                                description: "snapshot for blockvolume from EC2 instance: "+instance_id,
                                            })
         # step 1.2.1 creating "Name" tag
-        puts "step 1.2.1 creating \"Name\" tag on snapshot "+snapshot.id
+        puts "step 1.2.1 creating \"Name\" tag on snapshot " + snapshot.id
         snapshot.create_tags({
                                  dry_run: false,
                                  tags: [ # required
@@ -149,7 +149,7 @@ def backup(options = {})
 
                              })
         # step 1.2.3 creating "EC2-instanceID" tag. This tag is for knowing this snapshot is for which instance
-        puts "step 1.2.3 creating \"EC2-instanceID\" tag on snapshot "+snapshot.id
+        puts "step 1.2.3 creating \"EC2-instanceID\" tag on snapshot " + snapshot.id
         snapshot.create_tags({
                                  dry_run: false,
                                  tags: [ # required
