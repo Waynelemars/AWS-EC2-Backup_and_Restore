@@ -197,10 +197,10 @@ def restore(options = {})
   time        = options.fetch(:time)
 
   #step1 identify the snapshots from a specific EC2 instance
-  puts "step 1: identify the snapshots from EC2 instance "+instance_id
+  puts "step 1: identify the snapshots from EC2 instance " + instance_id
   #step1.1: find the boot volume snapshot
-  puts "step 1.1: identify the boot volume snapshot from EC2 instance "+instance_id
-  boot_volume_snapshots=resource.snapshots({
+  puts "step 1.1: identify the boot volume snapshot from EC2 instance " + instance_id
+  boot_volume_snapshots = resource.snapshots({
                                                dry_run: false,
                                                filters: [
                                                    {
@@ -261,7 +261,7 @@ def restore(options = {})
   #step2.1 only create boot volume
   puts "step 2.1: only create boot volume"
   boot_volume_snapshot.wait_until_completed
-  backup_instance_new_boot_volume= resource.create_volume({
+  backup_instance_new_boot_volume = resource.create_volume({
                                                               dry_run: false,
                                                               size: 1,
                                                               snapshot_id: boot_volume_snapshot.id,
@@ -340,7 +340,7 @@ def restore(options = {})
 
   #step3.1 start create new instance X
   puts "step 3.1: start to create new instance X"
-  instancesX=resource.create_instances({
+  instancesX = resource.create_instances({
                                            dry_run: false,
                                            image_id: "ami-6869aa05", # amazon Linux
                                            min_count: 1, # required
@@ -412,7 +412,7 @@ def restore(options = {})
                               })
   puts "step 4.1: boot volume to restored instance attached"
 
-  #step4.2 attach block volumes to instanceX
+  #step4.2 attach non block volumes to instanceX
   puts "step 4.2: Attaching block volume to instanceX: " + instancesX[0].id
   backup_instance_new_non_boot_volume_array.each do |new_non_boot_volume|
 
