@@ -181,9 +181,9 @@ end
 # restore ec2 instance function
 def restore(options = {})
   puts "WELCOME TO RESTORE FUNCTION"
-  puts "YOU ARE STARTING TO RESTORE EC2 INSTANCE "+ options.fetch(:instance_id)+"  NOW"
+  puts "YOU ARE STARTING TO RESTORE EC2 INSTANCE " + options.fetch(:instance_id) + "  NOW"
   region=options.fetch(:region)
-  availability_zone=options.fetch(:availability_zone)
+  availability_zone = options.fetch(:availability_zone)
   #connect EC2 resource
   ec2_client = Aws::EC2::Client.new(
       region: options.fetch(:region),
@@ -220,19 +220,19 @@ def restore(options = {})
                                            })
 
 
-  boot_volume_snapshot=nil
+  boot_volume_snapshot = nil
   boot_volume_snapshots.each do |snapshot|
-    boot_volume_snapshot=snapshot
+    boot_volume_snapshot = snapshot
   end
 
-  if boot_volume_snapshot!=nil
-    puts "step 1.1: boot_volume_snapshots from the EC2 instance was "+boot_volume_snapshot.id
+  if boot_volume_snapshot! = nil
+    puts "step 1.1: boot_volume_snapshots from the EC2 instance was " + boot_volume_snapshot.id
   else puts "boot_volume not found. Please check your input instance_id paramerter"
   end
 
 
   #step1.1 find the block volumes snapshots
-  puts "step 1.1: Identify the block volume snapshots from EC2 instance "+instance_id
+  puts "step 1.1: Identify the block volume snapshots from EC2 instance " + instance_id
 
   block_volume_snapshots=resource.snapshots({
                                                 dry_run: false,
@@ -297,10 +297,10 @@ def restore(options = {})
   puts "step 2.2: create block volumes"
 
 
-  backup_instance_new_non_boot_volume_array=[]
+  backup_instance_new_non_boot_volume_array = []
   block_volume_snapshots.each do |snapshot|
     snapshot.wait_until_completed
-    volume=ec2.create_volume({
+    volume = ec2.create_volume({
                                  dry_run: false,
                                  size: 1,
                                  snapshot_id: snapshot.id,
@@ -371,7 +371,7 @@ def restore(options = {})
 
 
   instancesX[0].wait_until_running(max_attempts:100,delay:100)
-  puts "instanceX: "+instancesX[0].id+" is running"
+  puts "instanceX: " + instancesX[0].id + " is running"
 
 
 
@@ -384,7 +384,7 @@ def restore(options = {})
 
 
   instancesX[0].wait_until_stopped
-  puts "step 3.2: stop instance X: "+instancesX[0].id+"was completed"
+  puts "step 3.2: stop instance X: " + instancesX[0].id + "was completed"
 
 
 
@@ -398,11 +398,11 @@ def restore(options = {})
                               })
 
   sleep(0.5)
-  puts "step 3.3: Root volume of instanceX: "+instancesX[0].id+" was detached"
+  puts "step 3.3: Root volume of instanceX: " + instancesX[0].id + " was detached"
 
 
   #step4 attach the volume
-  puts "step 4: Attach the volume to restored instanceX: "+instancesX[0].id
+  puts "step 4: Attach the volume to restored instanceX: " + instancesX[0].id
   #step4.1 attach root  volume to instanceX
   puts "step 4.1: Attach root  volume to instanceX: "+instancesX[0].id
   instancesX[0].attach_volume({
@@ -413,7 +413,7 @@ def restore(options = {})
   puts "step 4.1: boot volume to restored instance attached"
 
   #step4.2 attach block volumes to instanceX
-  puts "step 4.2: Attaching block volume to instanceX: "+instancesX[0].id
+  puts "step 4.2: Attaching block volume to instanceX: " + instancesX[0].id
   backup_instance_new_non_boot_volume_array.each do |new_non_boot_volume|
 
 
@@ -425,7 +425,7 @@ def restore(options = {})
   end
   puts "step 4.2: All block volumes attached"
   puts "Restore completed"
-  puts "You have successfully restored from EC2 instance:"+instance_id+" to EC2 instance: "+instancesX[0].id
+  puts "You have successfully restored from EC2 instance:" + instance_id + " to EC2 instance: "+instancesX[0].id
 end
 
 
